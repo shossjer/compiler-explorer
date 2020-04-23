@@ -383,6 +383,8 @@ Editor.prototype.initButtons = function (state) {
     this.conformanceViewerButton = this.domRoot.find('.btn.conformance');
     var addEditorButton = this.domRoot.find('.btn.add-editor');
     var toggleVimButton = this.domRoot.find('#vim-flag');
+    var addPresentationButton = this.domRoot.find('.btn.add-presentation');
+
     var togglePaneAdder = function () {
         paneAdderDropdown.dropdown('toggle');
     };
@@ -414,6 +416,10 @@ Editor.prototype.initButtons = function (state) {
         return Components.getEditor();
     }, this);
 
+    var getPresentationConfig = _.bind(function () {
+        return Components.getPresentationView(this.id, this.currentLanguage.id);
+    }, this);
+
     var addDragListener = _.bind(function (dragSource, dragConfig) {
         this.container.layoutManager
             .createDragSource(dragSource, dragConfig)
@@ -424,6 +430,7 @@ Editor.prototype.initButtons = function (state) {
     addDragListener(addExecutorButton, getExecutorConfig);
     addDragListener(this.conformanceViewerButton, getConformanceConfig);
     addDragListener(addEditorButton, getEditorConfig);
+    addDragListener(addPresentationButton, getPresentationConfig);
 
     var bindClickEvent = _.bind(function (dragSource, dragConfig) {
         dragSource.click(_.bind(function () {
@@ -437,6 +444,7 @@ Editor.prototype.initButtons = function (state) {
     bindClickEvent(addExecutorButton, getExecutorConfig);
     bindClickEvent(this.conformanceViewerButton, getConformanceConfig);
     bindClickEvent(addEditorButton, getEditorConfig);
+    bindClickEvent(addPresentationButton, getPresentationConfig);
 
     this.initLoadSaver();
     $(this.domRoot).keydown(_.bind(function (event) {

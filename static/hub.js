@@ -40,6 +40,7 @@ var gccDumpView = require('./panes/gccdump-view');
 var cfgView = require('./panes/cfg-view');
 var conformanceView = require('./panes/conformance-view');
 var CompilerService = require('compiler-service');
+var presentationView = require('./panes/presentation-view');
 
 function Ids() {
     this.used = {};
@@ -126,6 +127,10 @@ function Hub(layout, subLangId, defaultLangId) {
     layout.registerComponent(Components.getConformanceView().componentName,
         function (container, state) {
             return self.confomanceFactory(container, state);
+        });
+    layout.registerComponent(Components.getPresentationView().componentName,
+        function (container, state) {
+            return self.presentationViewFactory(container, state);
         });
 
     layout.eventHub.on('editorOpen', function (id) {
@@ -221,6 +226,10 @@ Hub.prototype.gccDumpViewFactory = function (container, state) {
 
 Hub.prototype.cfgViewFactory = function (container, state) {
     return new cfgView.Cfg(this, container, state);
+};
+
+Hub.prototype.presentationViewFactory = function (container, state) {
+    return new presentationView.PresentationView(this, container, state);
 };
 
 Hub.prototype.confomanceFactory = function (container, state) {

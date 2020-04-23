@@ -49,6 +49,9 @@
           button.dropdown-item.btn.btn-sm.btn-light.add-editor(title="Add a new source editor view" aria-label="New source editor")
             span.dropdown-icon.fa.fa-code
             | Source editor
+          button.dropdown-item.btn.btn-sm.btn-light.btn.add-presentation(title="Add a presentation view" aria-label="New presentation")
+            span.dropdown-icon.fa.fa-television
+            | Presentation
         button#vim-flag.btn.btn-sm.btn-light(title="Toggle Vim Keybindings")
           span.fab.fa-vimeo-v
           span.hideable &nbsp; Vim
@@ -362,3 +365,21 @@
   #share-item
     a.share-item(href="javascript:;" rel="noopener noreferrer" target="_blank")
       span.share-item-text
+
+  #presentationview
+    .top-bar.btn-toolbar.options-toolbar.bg-light(role="toolbar")
+      .btn-group.btn-group-sm(role="group")
+        button.btn.btn-sm.btn-light.left(title="left")
+          span.fas.fa-arrow-left
+        button.btn.btn-sm.btn-light.right(title="right")
+          span.fas.fa-arrow-right
+    .level0
+      .data
+    .level1.d-none
+      .data
+    .level2.d-none
+      .data
+    .level3.d-none
+      .data
+    .level4.d-none
+      .data

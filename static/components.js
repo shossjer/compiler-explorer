@@ -205,5 +205,12 @@ module.exports = {
                 editorid: editorid
             }
         };
+    },
+    getPresentationView: function (editorId, lang) {
+        return {
+            type: 'component',
+            componentName: 'presentation',
+            componentState: {source: editorId, lang: lang}
+        };
     }
 };
