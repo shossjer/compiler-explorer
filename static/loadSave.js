@@ -51,6 +51,7 @@ function LoadSave() {
     this.extension = '.txt';
     this.base = window.httpRoot;
     this.fetchBuiltins();
+    this.fetchProjectFiles();
 }
 
 LoadSave.prototype.initializeIfNeeded = function () {
@@ -66,6 +67,15 @@ LoadSave.prototype.initializeIfNeeded = function () {
 LoadSave.prototype.fetchBuiltins = function () {
     return new Promise(_.bind(function (resolve) {
         $.getJSON(window.location.origin + this.base + 'source/builtin/list', function (list) {
+            resolve(list);
+        });
+    }, this));
+};
+
+
+LoadSave.prototype.fetchProjectFiles = function () {
+    return new Promise(_.bind(function (resolve) {
+        $.getJSON(window.location.origin + this.base + 'source/project/list', function (list) {
             resolve(list);
         });
     }, this));
@@ -87,6 +97,30 @@ LoadSave.prototype.populateBuiltins = function () {
                     };
                 }, this))
             );
+        }, this));
+};
+
+LoadSave.prototype.populateProjectFiles = function () {
+    return this.fetchProjectFiles()
+        .then(_.bind(function (list) {
+            var groups =
+                _.groupBy(
+                    _.groupBy(
+                        list,
+                        'filepath'),
+                    (xs, filepath) => _.sortBy(
+                        _.map(
+                            xs,
+                            x => ''.concat(x.projectid, ':', x.target, ':', x.config)),
+                        g => g).toString());
+
+            _.each(
+                groups,
+                (files, groupid) => {
+                    groups[groupid] = files.flat();
+                });
+
+            this.populateGroups(this.modal.find('.project-groups'), groups);
         }, this));
 };
 
@@ -133,6 +167,35 @@ LoadSave.prototype.populate = function (root, list) {
     }, this));
 };
 
+LoadSave.prototype.populateGroups = function (root, groups) {
+    root.find('dt:not(.template-name)').remove();
+    root.find('dd:not(.template-list)').remove();
+    var name = root.find('.template-name');
+    var list = root.find('.template-list');
+    _.each(groups, _.bind(function (files, groupid) {
+        name
+            .clone()
+            .removeClass('template-name')
+            .appendTo(root)
+            .text(groupid);
+
+        const dd = list
+              .clone()
+              .removeClass('template-list')
+              .appendTo(root);
+
+        this.populate(dd.find('.project-files'),
+                      _.map(files, _.bind(function (file) {
+                          return {
+                              name: file.filename,
+                              load: _.bind(function () {
+                                  this.doLoadProjectFile(file);
+                              }, this)
+                          };
+                      }, this)));
+    }, this));
+};
+
 LoadSave.prototype.onLocalFile = function (event) {
     var files = event.target.files;
     if (files.length !== 0) {
@@ -155,7 +218,7 @@ LoadSave.prototype.run = function (onLoad, editorText, currentLanguage) {
     this.modal.find('.local-file').attr('accept', _.map(currentLanguage.extensions, function (extension) {
         return extension + ', ';
     }, this));
-    this.populateBuiltins().then(_.bind(function () {
+    Promise.all([this.populateProjectFiles(), this.populateBuiltins()]).then(_.bind(function (values) {
         this.modal.modal();
     }, this));
     ga.proxy('send', {
@@ -221,5 +284,12 @@ LoadSave.prototype.doLoad = function (element) {
     this.modal.modal('hide');
 };
 
+LoadSave.prototype.doLoadProjectFile = function (file) {
+    $.getJSON(window.location.origin + this.base + 'source/project/load/' + file.projectid + '/' + file.config + '/' + file.target + '/' + file.fileindex,
+              _.bind(function (response) {
+                  this.onLoad(response.file);
+              }, this));
+    this.modal.modal('hide');
+};
 
 module.exports = { LoadSave: LoadSave };

@@ -10,12 +10,20 @@
         .card
           .card-header
             ul.nav.nav-tabs.card-header-tabs(role="tablist")
-              li.nav-item(role="presentation"): a.nav-link.active(href="#load-examples" role="tab" data-toggle="tab") Examples
+              li.nav-item(role="presentation"): a.nav-link.active(href="#load-project-files" role="tab" data-toggle="tab") Project
+              li.nav-item(role="presentation"): a.nav-link(href="#load-examples" role="tab" data-toggle="tab") Examples
               li.nav-item(role="presentation"): a.nav-link(href="#load-browser-local" role="tab" data-toggle="tab") Browser-local storage
               li.nav-item(role="presentation"): a.nav-link(href="#load-browser-local-history" role="tab" data-toggle="tab") Browser-local history
               li.nav-item(role="presentation"): a.nav-link(href="#load-file-system" role="tab" data-toggle="tab") File system
           .card-body.tab-content
-            #load-examples.tab-pane.active(role="tabpanel")
+            #load-project-files.tab-pane.active(role="tabpanel")
+              h4.card-title Load from project files:
+              dl.project-groups.small-v-scrollable
+                dt.template-name
+                dd.template-list
+                  ul.project-files
+                    li.template: a(href="javascript:;")
+            #load-examples.tab-pane(role="tabpanel")
               h4.card-title Load from examples:
               ul.examples.small-v-scrollable
                 li.template: a(href="javascript:;")
